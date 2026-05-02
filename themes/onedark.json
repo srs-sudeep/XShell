@@ -1,0 +1,21 @@
+{
+  "name": "One Dark",
+  "description": "VS Code / Atom One Dark theme",
+  "colors": {
+    "background":  "#282c34",
+    "foreground":  "#abb2bf",
+    "prompt_user": "bright_cyan",
+    "prompt_host": "bright_green",
+    "prompt_cwd":  "bright_yellow",
+    "prompt_git":  "bright_magenta",
+    "error":       "bright_red",
+    "success":     "bright_green",
+    "info":        "bright_blue",
+    "warning":     "bright_yellow",
+    "cursor":      "#528bff",
+    "selection":   "#3e4451"
+  },
+  "prompt": {
+    "format": "{default}"
+  }
+}

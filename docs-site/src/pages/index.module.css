@@ -1,0 +1,42 @@
+.heroBanner {
+  padding: 5rem 0 4rem;
+  text-align: center;
+  overflow: hidden;
+}
+
+.asciiLogo {
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 0.8rem;
+  line-height: 1.3;
+  color: #4ec94e;
+  display: inline-block;
+  text-align: left;
+  margin-bottom: 1rem;
+}
+
+.buttons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.quickInstall {
+  margin-top: 2rem;
+}
+
+.quickInstall code {
+  background: rgba(0, 0, 0, 0.4);
+  padding: 0.6rem 1.2rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  color: #e5c07b;
+  border: 1px solid #333;
+}
+
+@media (max-width: 768px) {
+  .asciiLogo { font-size: 0.55rem; }
+  .heroBanner { padding: 3rem 1rem 2rem; }
+}

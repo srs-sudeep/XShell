@@ -1,0 +1,21 @@
+{
+  "name": "Gruvbox Dark",
+  "description": "Retro groove — the iconic Gruvbox dark palette",
+  "colors": {
+    "background":  "#282828",
+    "foreground":  "#ebdbb2",
+    "prompt_user": "bright_yellow",
+    "prompt_host": "bright_green",
+    "prompt_cwd":  "bright_cyan",
+    "prompt_git":  "bright_magenta",
+    "error":       "bright_red",
+    "success":     "bright_green",
+    "info":        "bright_blue",
+    "warning":     "bright_yellow",
+    "cursor":      "#fe8019",
+    "selection":   "#3c3836"
+  },
+  "prompt": {
+    "format": "{default}"
+  }
+}

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>XShell — Web Terminal</title>
+  <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='img/favicon.svg') }}"/>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
+</head>
+<body>
+
+<div id="app">
+
+  <!-- Title Bar -->
+  <div id="titlebar">
+    <div class="tb-left">
+      <span class="tb-dot red"    title="Close"    onclick="window.close()"></span>
+      <span class="tb-dot yellow" title="Minimize" onclick="toggleMinimize()"></span>
+      <span class="tb-dot green"  title="Maximize" onclick="toggleMaximize()"></span>
+    </div>
+
+    <!-- Tab Bar -->
+    <div id="tab-bar">
+      <div id="tabs"></div>
+      <button id="tab-add" title="New tab" onclick="addTab()">+</button>
+    </div>
+
+    <div class="tb-center">
+      <span id="tb-title">XShell v2.0</span>
+      <span id="tb-cwd" class="tb-cwd"></span>
+    </div>
+
+    <div class="tb-right">
+      <button class="tb-btn" id="btn-split-v" title="Split vertical"   onclick="splitPane('v')">⬛</button>
+      <button class="tb-btn" id="btn-split-h" title="Split horizontal" onclick="splitPane('h')">▬</button>
+      <button class="tb-btn" id="btn-font-up"   title="Font size +"  onclick="changeFontSize(1)">A+</button>
+      <button class="tb-btn" id="btn-font-down" title="Font size -"  onclick="changeFontSize(-1)">A-</button>
+      <button class="tb-btn" id="btn-search" title="Search (Ctrl+F)" onclick="toggleSearch()">🔍</button>
+      <button class="tb-btn" title="Change theme"   onclick="toggleThemePanel()">🎨</button>
+      <button class="tb-btn" title="Upload file"    onclick="triggerUpload()">⬆</button>
+      <button class="tb-btn" title="Clear terminal" onclick="clearTerminal()">⌫</button>
+    </div>
+  </div>
+
+  <!-- Theme Panel -->
+  <div id="theme-panel" class="hidden">
+    <div class="panel-header">
+      <span>Choose Theme</span>
+      <button onclick="toggleThemePanel()">✕</button>
+    </div>
+    <div id="theme-list"></div>
+  </div>
+
+  <!-- Search Bar -->
+  <div id="search-bar" class="hidden">
+    <input id="search-input" type="text" placeholder="Search output…" oninput="searchOutput(this.value)"/>
+    <span id="search-count"></span>
+    <button onclick="searchNav(-1)">▲</button>
+    <button onclick="searchNav(1)">▼</button>
+    <button onclick="toggleSearch()">✕</button>
+  </div>
+
+  <!-- Context Menu -->
+  <div id="ctx-menu" class="hidden">
+    <button onclick="ctxCopy()">Copy</button>
+    <button onclick="ctxPaste()">Paste</button>
+    <button onclick="clearTerminal()">Clear</button>
+    <button onclick="toggleSearch()">Search</button>
+  </div>
+
+  <!-- Main terminal area (supports split panes) -->
+  <div id="pane-container">
+    <!-- Pane 0 (primary) -->
+    <div class="pane" id="pane-0">
+      <div class="terminal" id="terminal-0" onclick="focusInput(0)">
+        <div class="output" id="output-0"></div>
+        <div class="input-row" id="input-row-0">
+          <span class="prompt-display" id="prompt-0">$ </span>
+          <div class="input-wrapper">
+            <span class="input-ghost" id="ghost-0"></span>
+            <input
+              class="cmd-input"
+              id="cmd-input-0"
+              data-pane="0"
+              type="text"
+              autocomplete="off"
+              autocorrect="off"
+              autocapitalize="off"
+              spellcheck="false"
+              autofocus
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Status Bar -->
+  <div id="statusbar">
+    <span id="sb-status" class="status-ok">● Connected</span>
+    <span id="sb-cwd"></span>
+    <span id="sb-theme">Theme: default</span>
+    <span id="sb-exit"></span>
+    <span id="sb-jobs" class="hidden"></span>
+    <span style="flex:1"></span>
+    <span id="sb-font">13px</span>
+  </div>
+
+</div>
+
+<!-- Hidden file input for uploads -->
+<input type="file" id="file-upload-input" style="display:none" multiple onchange="uploadFiles(this.files)"/>
+
+<!-- Mobile virtual keyboard toggle -->
+<button id="mobile-kbd-btn" onclick="toggleMobileKeyboard()">⌨</button>
+
+<script src="https://cdn.socket.io/4.7.4/socket.io.min.js"></script>
+<script src="{{ url_for('static', filename='js/terminal.js') }}"></script>
+</body>
+</html>

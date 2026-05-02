@@ -1,0 +1,101 @@
+/* ── XShell Docusaurus Theme ────────────────────────────────────────────── */
+
+:root {
+  --ifm-color-primary:         #4ec94e;
+  --ifm-color-primary-dark:    #35b835;
+  --ifm-color-primary-darker:  #2fad2f;
+  --ifm-color-primary-darkest: #278f27;
+  --ifm-color-primary-light:   #67d467;
+  --ifm-color-primary-lighter: #73d773;
+  --ifm-color-primary-lightest:#98e298;
+  --ifm-code-font-size:        92%;
+  --ifm-font-family-monospace: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+  --docusaurus-highlighted-code-line-bg: rgba(78, 201, 78, 0.12);
+}
+
+[data-theme='dark'] {
+  --ifm-background-color:       #1e1e1e;
+  --ifm-background-surface-color: #252526;
+  --ifm-navbar-background-color:  #252526;
+  --ifm-footer-background-color:  #1a1a1a;
+  --ifm-color-primary:          #4ec94e;
+  --docusaurus-highlighted-code-line-bg: rgba(78, 201, 78, 0.15);
+}
+
+/* ── Navbar ─────────────────────────────────────────────────────────────── */
+.navbar {
+  border-bottom: 1px solid var(--ifm-color-emphasis-200);
+  backdrop-filter: blur(8px);
+}
+.navbar__title {
+  font-family: var(--ifm-font-family-monospace);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+
+/* ── Homepage hero ───────────────────────────────────────────────────────── */
+.hero--primary {
+  background: linear-gradient(135deg, #0d1117 0%, #1a1f2e 50%, #0d1117 100%);
+  padding: 5rem 0 4rem;
+}
+.hero__title {
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 3.5rem;
+  background: linear-gradient(90deg, #4ec94e, #56b6c2);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero__subtitle {
+  color: #8b949e;
+  font-size: 1.2rem;
+}
+
+/* ── Feature cards ───────────────────────────────────────────────────────── */
+.features {
+  padding: 3rem 0;
+}
+.featureSvg {
+  height: 160px;
+  width: 160px;
+}
+.feature__icon {
+  font-size: 3rem;
+  display: block;
+  margin-bottom: 1rem;
+}
+
+/* ── Code blocks ─────────────────────────────────────────────────────────── */
+.prism-code {
+  border-radius: 8px;
+  font-size: 0.87rem;
+}
+
+/* ── Terminal-style inline code ─────────────────────────────────────────── */
+code {
+  border-radius: 4px;
+  font-family: var(--ifm-font-family-monospace);
+}
+
+/* ── Admonitions ─────────────────────────────────────────────────────────── */
+.alert--tip   { border-left-color: var(--ifm-color-primary); }
+.alert--info  { border-left-color: #61afef; }
+.alert--warning { border-left-color: #e5c07b; }
+
+/* ── Table styling ───────────────────────────────────────────────────────── */
+table {
+  display: table;
+  width: 100%;
+}
+th { background: var(--ifm-color-emphasis-100); }
+
+/* ── Sidebar ─────────────────────────────────────────────────────────────── */
+.menu__link--active {
+  color: var(--ifm-color-primary) !important;
+  font-weight: 600;
+}
+
+/* ── Footer ──────────────────────────────────────────────────────────────── */
+.footer {
+  font-size: 0.85rem;
+}

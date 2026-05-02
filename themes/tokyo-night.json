@@ -1,0 +1,21 @@
+{
+  "name": "Tokyo Night",
+  "description": "Inspired by the city lights of Tokyo at night",
+  "colors": {
+    "background":  "#1a1b26",
+    "foreground":  "#a9b1d6",
+    "prompt_user": "bright_cyan",
+    "prompt_host": "bright_blue",
+    "prompt_cwd":  "bright_magenta",
+    "prompt_git":  "bright_green",
+    "error":       "bright_red",
+    "success":     "bright_green",
+    "info":        "bright_cyan",
+    "warning":     "bright_yellow",
+    "cursor":      "#c0caf5",
+    "selection":   "#33467c"
+  },
+  "prompt": {
+    "format": "{default}"
+  }
+}

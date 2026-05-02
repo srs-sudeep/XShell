@@ -1,0 +1,21 @@
+{
+  "name": "Catppuccin Mocha",
+  "description": "Soothing pastel theme — Catppuccin Mocha variant",
+  "colors": {
+    "background":  "#1e1e2e",
+    "foreground":  "#cdd6f4",
+    "prompt_user": "bright_magenta",
+    "prompt_host": "bright_cyan",
+    "prompt_cwd":  "bright_yellow",
+    "prompt_git":  "bright_green",
+    "error":       "bright_red",
+    "success":     "bright_green",
+    "info":        "bright_blue",
+    "warning":     "bright_yellow",
+    "cursor":      "#f5e0dc",
+    "selection":   "#585b70"
+  },
+  "prompt": {
+    "format": "{default}"
+  }
+}

@@ -1,0 +1,9 @@
+# Docusaurus build output
+.docusaurus
+build/
+
+# Dependencies — use `bun install` or `npm install` to restore
+node_modules/
+
+# Generated
+.cache
