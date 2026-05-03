@@ -20,50 +20,35 @@ jobs:
   build-linux-manylinux:
     name: Build Linux (manylinux2014)
     runs-on: ubuntu-latest
-    container:
-      image: quay.io/pypa/manylinux2014_x86_64
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Select Python 3.11 in manylinux
+      - name: Build Linux binaries in manylinux2014
         shell: bash
         run: |
           set -euo pipefail
-          echo "PYBIN=/opt/python/cp311-cp311/bin/python" >> "$GITHUB_ENV"
-
-      - name: Install dependencies
-        shell: bash
-        run: |
-          set -euo pipefail
-          "$PYBIN" -m pip install --upgrade pip
-          "$PYBIN" -m pip install -r requirements.txt
-
-      - name: Build native binary
-        shell: bash
-        run: |
-          set -euo pipefail
-          "$PYBIN" build.py
-
-      - name: Stage native binary
-        shell: bash
-        run: |
-          set -euo pipefail
-          mkdir -p release
-          cp dist/xshell release/xshell
-
-      - name: Build web binary
-        shell: bash
-        run: |
-          set -euo pipefail
-          "$PYBIN" build.py --web
+          docker run --rm \
+            -v "$PWD:/io" \
+            -w /io \
+            quay.io/pypa/manylinux2014_x86_64 \
+            /bin/bash -lc '
+              set -euo pipefail
+              PYBIN=/opt/python/cp311-cp311/bin/python
+              "$PYBIN" -m pip install --upgrade pip
+              "$PYBIN" -m pip install -r requirements.txt
+              "$PYBIN" build.py
+              mkdir -p release
+              cp dist/xshell release/xshell
+              "$PYBIN" build.py --web
+              cp dist/xshell-web release/xshell-web
+            '
 
       - name: Create release archive (Linux manylinux)
         shell: bash
         run: |
           set -euo pipefail
-          cp dist/xshell-web release/xshell-web
           tar -czf "xshell-linux-x86_64-manylinux2014.tar.gz" -C release .
 
       - name: Upload Linux binaries to GitHub Release
