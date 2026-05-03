@@ -129,7 +129,9 @@ def build(target: str, name: str, windowed: bool = False):
 
     sep = _sep()
     cmd = [
-        'pyinstaller',
+        sys.executable,
+        '-m',
+        'PyInstaller',
         f'--name={name}',
         '--onefile',
         '--clean',
