@@ -17,13 +17,69 @@ permissions:
   contents: write
 
 jobs:
-  build-and-upload:
+  build-linux-manylinux:
+    name: Build Linux (manylinux2014)
+    runs-on: ubuntu-latest
+    container:
+      image: quay.io/pypa/manylinux2014_x86_64
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Select Python 3.11 in manylinux
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "PYBIN=/opt/python/cp311-cp311/bin/python" >> "$GITHUB_ENV"
+
+      - name: Install dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          "$PYBIN" -m pip install --upgrade pip
+          "$PYBIN" -m pip install -r requirements.txt
+
+      - name: Build native binary
+        shell: bash
+        run: |
+          set -euo pipefail
+          "$PYBIN" build.py
+
+      - name: Stage native binary
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p release
+          cp dist/xshell release/xshell
+
+      - name: Build web binary
+        shell: bash
+        run: |
+          set -euo pipefail
+          "$PYBIN" build.py --web
+
+      - name: Create release archive (Linux manylinux)
+        shell: bash
+        run: |
+          set -euo pipefail
+          cp dist/xshell-web release/xshell-web
+          tar -czf "xshell-linux-x86_64-manylinux2014.tar.gz" -C release .
+
+      - name: Upload Linux binaries to GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.event_name == 'workflow_dispatch' && inputs.tag_name || github.event.release.tag_name || github.ref_name }}
+          files: |
+            xshell-linux-x86_64-manylinux2014.tar.gz
+
+  build-nonlinux:
     name: Build on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        os: [windows-latest, macos-latest]
 
     steps:
       - name: Checkout
@@ -42,8 +98,8 @@ jobs:
       - name: Build native binary
         run: python build.py
 
-      - name: Stage native binary (Linux/macOS)
-        if: runner.os != 'Windows'
+      - name: Stage native binary (macOS)
+        if: runner.os == 'macOS'
         shell: bash
         run: |
           set -euo pipefail
@@ -60,8 +116,8 @@ jobs:
       - name: Build web binary
         run: python build.py --web
 
-      - name: Create release archive (Linux/macOS)
-        if: runner.os != 'Windows'
+      - name: Create release archive (macOS)
+        if: runner.os == 'macOS'
         shell: bash
         run: |
           set -euo pipefail
@@ -79,10 +135,10 @@ jobs:
           Copy-Item dist/xshell-web.exe release/xshell-web.exe
           Compress-Archive -Path release/* -DestinationPath "xshell-$os-$arch.zip" -Force
 
-      - name: Upload binaries to GitHub Release
+      - name: Upload non-Linux binaries to GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.event_name == 'workflow_dispatch' && inputs.tag_name || github.event.release.tag_name || github.ref_name }}
           files: |
-            xshell-*.tar.gz
-            xshell-*.zip
+            xshell-macos-*.tar.gz
+            xshell-windows-*.zip
