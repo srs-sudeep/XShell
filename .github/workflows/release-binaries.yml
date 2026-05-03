@@ -7,6 +7,11 @@ on:
     tags:
       - "v*"
   workflow_dispatch:
+    inputs:
+      tag_name:
+        description: "Existing git tag to publish assets to (example: v1.0.1)"
+        required: true
+        type: string
 
 permissions:
   contents: write
@@ -37,6 +42,21 @@ jobs:
       - name: Build native binary
         run: python build.py
 
+      - name: Stage native binary (Linux/macOS)
+        if: runner.os != 'Windows'
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p release
+          cp dist/xshell release/xshell
+
+      - name: Stage native binary (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path release | Out-Null
+          Copy-Item dist/xshell.exe release/xshell.exe
+
       - name: Build web binary
         run: python build.py --web
 
@@ -47,8 +67,6 @@ jobs:
           set -euo pipefail
           OS=$(echo "${{ runner.os }}" | tr '[:upper:]' '[:lower:]')
           ARCH=$(echo "${{ runner.arch }}" | tr '[:upper:]' '[:lower:]')
-          mkdir -p release
-          cp dist/xshell release/xshell
           cp dist/xshell-web release/xshell-web
           tar -czf "xshell-${OS}-${ARCH}.tar.gz" -C release .
 
@@ -58,15 +76,13 @@ jobs:
         run: |
           $os = $env:RUNNER_OS.ToLower()
           $arch = $env:RUNNER_ARCH.ToLower()
-          New-Item -ItemType Directory -Force -Path release | Out-Null
-          Copy-Item dist/xshell.exe release/xshell.exe
           Copy-Item dist/xshell-web.exe release/xshell-web.exe
           Compress-Archive -Path release/* -DestinationPath "xshell-$os-$arch.zip" -Force
 
       - name: Upload binaries to GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ github.event.release.tag_name || github.ref_name }}
+          tag_name: ${{ github.event_name == 'workflow_dispatch' && inputs.tag_name || github.event.release.tag_name || github.ref_name }}
           files: |
             xshell-*.tar.gz
             xshell-*.zip

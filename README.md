@@ -219,6 +219,8 @@ Binary builds are automated by `.github/workflows/release-binaries.yml` and run 
 - Git tag push matching `v*` (for example `v1.0.1`)
 - Manual run from Actions (`workflow_dispatch`)
 
+Regular pushes to `main` do not trigger this release workflow.
+
 Typical flow:
 
 ```bash
