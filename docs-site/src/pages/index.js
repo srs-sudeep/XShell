@@ -1,15 +1,14 @@
-import React from 'react';
-import clsx from 'clsx';
-import Link from '@docusaurus/Link';
-import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
-import Layout from '@theme/Layout';
-import HomepageFeatures from '@site/src/components/HomepageFeatures';
-import styles from './index.module.css';
+import Link from "@docusaurus/Link";
+import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
+import HomepageFeatures from "@site/src/components/HomepageFeatures";
+import Layout from "@theme/Layout";
+import clsx from "clsx";
+import styles from "./index.module.css";
 
 function HeroBanner() {
   const { siteConfig } = useDocusaurusContext();
   return (
-    <header className={clsx('hero hero--primary', styles.heroBanner)}>
+    <header className={clsx("hero hero--primary", styles.heroBanner)}>
       <div className="container">
         <pre className={styles.asciiLogo}>{`
   __  __ _____  _          _ _
@@ -20,11 +19,23 @@ function HeroBanner() {
 /_/    \\_\\____/ |_| |_|\\___|_|_|`}</pre>
         <p className="hero__subtitle">{siteConfig.tagline}</p>
         <div className={styles.buttons}>
-          <Link className="button button--primary button--lg" to="/docs/getting-started">
+          <Link
+            className="button button--primary button--lg"
+            to="/docs/getting-started"
+          >
             Get Started →
           </Link>
-          <Link className="button button--secondary button--lg margin-left--md" to="/docs/commands">
+          <Link
+            className="button button--secondary button--lg margin-left--md"
+            to="/docs/commands"
+          >
             Commands
+          </Link>
+          <Link
+            className="button button--primary button--lg"
+            to="https://github.com/srs-sudeep/XShell/releases"
+          >
+            Download
           </Link>
         </div>
         <div className={styles.quickInstall}>

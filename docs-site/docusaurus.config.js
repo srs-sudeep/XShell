@@ -94,6 +94,11 @@ const config = {
             position: "left",
           },
           {
+            href: "https://github.com/srs-sudeep/XShell/releases",
+            label: "Download",
+            position: "right",
+          },
+          {
             href: "https://github.com/your-org/xshell",
             label: "GitHub",
             position: "right",
@@ -125,6 +130,10 @@ const config = {
           {
             title: "More",
             items: [
+              {
+                label: "Download Releases",
+                href: "https://github.com/srs-sudeep/XShell/releases",
+              },
               { label: "GitHub", href: "https://github.com/your-org/xshell" },
               { label: "Changelog", to: "/docs/changelog" },
             ],

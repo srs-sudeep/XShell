@@ -1,0 +1,67 @@
+name: Release Binaries
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-upload:
+    name: Build on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Build native binary
+        run: python build.py
+
+      - name: Build web binary
+        run: python build.py --web
+
+      - name: Create release archive (Linux/macOS)
+        if: runner.os != 'Windows'
+        shell: bash
+        run: |
+          set -euo pipefail
+          OS=$(echo "${{ runner.os }}" | tr '[:upper:]' '[:lower:]')
+          ARCH=$(echo "${{ runner.arch }}" | tr '[:upper:]' '[:lower:]')
+          mkdir -p release
+          cp dist/xshell release/xshell
+          cp dist/xshell-web release/xshell-web
+          tar -czf "xshell-${OS}-${ARCH}.tar.gz" -C release .
+
+      - name: Create release archive (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $os = $env:RUNNER_OS.ToLower()
+          $arch = $env:RUNNER_ARCH.ToLower()
+          New-Item -ItemType Directory -Force -Path release | Out-Null
+          Copy-Item dist/xshell.exe release/xshell.exe
+          Copy-Item dist/xshell-web.exe release/xshell-web.exe
+          Compress-Archive -Path release/* -DestinationPath "xshell-$os-$arch.zip" -Force
+
+      - name: Upload binaries to GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            xshell-*.tar.gz
+            xshell-*.zip
