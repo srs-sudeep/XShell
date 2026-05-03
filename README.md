@@ -231,8 +231,9 @@ git push origin v1.0.1
 The workflow builds Linux/macOS/Windows binaries and attaches archives to the
 matching GitHub Release.
 
-Linux binaries are produced inside a `manylinux2014` container to keep a stable,
-older `glibc` baseline and improve compatibility across more Linux distros.
+Linux binaries are produced on `ubuntu-22.04` to avoid the newer `glibc` baseline
+from `ubuntu-latest` while still using a Python build that works with
+PyInstaller.
 
 Packaged builds bundle `templates/`, `static/`, the repository `themes/` folder,
 the repository `plugins/` folder, and the bundled Python plugin modules under

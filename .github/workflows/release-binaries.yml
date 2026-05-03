@@ -17,46 +17,50 @@ permissions:
   contents: write
 
 jobs:
-  build-linux-manylinux:
-    name: Build Linux (manylinux2014)
-    runs-on: ubuntu-latest
+  build-linux:
+    name: Build Linux (Ubuntu 22.04)
+    runs-on: ubuntu-22.04
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Build Linux binaries in manylinux2014
-        shell: bash
-        run: |
-          set -euo pipefail
-          docker run --rm \
-            -v "$PWD:/io" \
-            -w /io \
-            quay.io/pypa/manylinux2014_x86_64 \
-            /bin/bash -lc '
-              set -euo pipefail
-              PYBIN=/opt/python/cp311-cp311/bin/python
-              "$PYBIN" -m pip install --upgrade pip
-              "$PYBIN" -m pip install -r requirements.txt
-              "$PYBIN" build.py
-              mkdir -p release
-              cp dist/xshell release/xshell
-              "$PYBIN" build.py --web
-              cp dist/xshell-web release/xshell-web
-            '
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
 
-      - name: Create release archive (Linux manylinux)
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Build native binary
+        run: python build.py
+
+      - name: Stage native binary
         shell: bash
         run: |
           set -euo pipefail
-          tar -czf "xshell-linux-x86_64-manylinux2014.tar.gz" -C release .
+          mkdir -p release
+          cp dist/xshell release/xshell
+
+      - name: Build web binary
+        run: python build.py --web
+
+      - name: Create release archive (Linux)
+        shell: bash
+        run: |
+          set -euo pipefail
+          cp dist/xshell-web release/xshell-web
+          tar -czf "xshell-linux-x86_64-ubuntu22.04.tar.gz" -C release .
 
       - name: Upload Linux binaries to GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.event_name == 'workflow_dispatch' && inputs.tag_name || github.event.release.tag_name || github.ref_name }}
           files: |
-            xshell-linux-x86_64-manylinux2014.tar.gz
+            xshell-linux-x86_64-ubuntu22.04.tar.gz
 
   build-nonlinux:
     name: Build on ${{ matrix.os }}

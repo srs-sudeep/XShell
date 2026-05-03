@@ -130,11 +130,13 @@ version `GLIBC_2.38' not found
 ```
 
 For release binaries or anything you plan to share across Linux distros, build
-inside the same manylinux2014 container used by the GitHub Actions workflow:
+on the oldest supported distro you can reasonably target. The GitHub Actions
+workflow uses `ubuntu-22.04`; avoid `ubuntu-latest` because it can move to a
+newer glibc baseline.
 
 ```bash
-docker run --rm -v "$PWD:/io" -w /io quay.io/pypa/manylinux2014_x86_64 \
-  /bin/bash -lc '/opt/python/cp311-cp311/bin/python -m pip install -r requirements.txt && /opt/python/cp311-cp311/bin/python build.py'
+python -m pip install -r requirements.txt
+python build.py
 ```
 
 To install system-wide:
@@ -189,9 +191,10 @@ Check the target machine's glibc version:
 ldd --version
 ```
 
-Fix it by rebuilding on an older compatible baseline, preferably the
-`quay.io/pypa/manylinux2014_x86_64` container used by the release workflow, or
-by building directly on the oldest distro version you intend to support.
+Fix it by rebuilding on an older compatible baseline. The release workflow uses
+`ubuntu-22.04` for this reason. Do not use the pypa manylinux Python directly
+for PyInstaller builds; it is built for wheel packaging and does not provide the
+shared Python library that PyInstaller requires.
 
 ### Icon file
 

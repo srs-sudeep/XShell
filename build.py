@@ -113,13 +113,13 @@ def warn_linux_glibc():
     if version is None:
         return
 
-    if version >= (2, 35):
+    if version >= (2, 36):
         print(
             "\nWarning: building on Linux with glibc "
             f"{version[0]}.{version[1]}.\n"
             "  PyInstaller binaries inherit the build host's glibc baseline.\n"
-            "  For wider Linux compatibility, build release binaries in the\n"
-            "  manylinux2014 container used by .github/workflows/release-binaries.yml.\n"
+            "  For wider Linux compatibility, build release binaries on an\n"
+            "  older runner such as ubuntu-22.04.\n"
         )
 
 
