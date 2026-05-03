@@ -209,6 +209,26 @@ python build.py --web      # → dist/xshell-web
 python build.py --clean    # remove build artifacts
 ```
 
+## Publish binaries on GitHub Releases
+
+You do **not** need to upload executables manually each time.
+
+Binary builds are automated by `.github/workflows/release-binaries.yml` and run on:
+
+- Published GitHub Release
+- Git tag push matching `v*` (for example `v1.0.1`)
+- Manual run from Actions (`workflow_dispatch`)
+
+Typical flow:
+
+```bash
+git tag v1.0.1
+git push origin v1.0.1
+```
+
+The workflow builds Linux/macOS/Windows binaries and attaches archives to the
+matching GitHub Release.
+
 Packaged builds bundle `templates/`, `static/`, the repository `themes/` folder,
 the repository `plugins/` folder, and the bundled Python plugin modules under
 `xshell/plugins/builtin/`. The same root-relative theme and plugin discovery

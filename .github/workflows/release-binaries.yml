@@ -3,6 +3,10 @@ name: Release Binaries
 on:
   release:
     types: [published]
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -62,6 +66,7 @@ jobs:
       - name: Upload binaries to GitHub Release
         uses: softprops/action-gh-release@v2
         with:
+          tag_name: ${{ github.event.release.tag_name || github.ref_name }}
           files: |
             xshell-*.tar.gz
             xshell-*.zip
