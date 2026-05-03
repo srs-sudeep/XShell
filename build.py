@@ -11,6 +11,7 @@ Usage:
 
 import argparse
 import importlib.util
+import platform
 import shutil
 import subprocess
 import sys
@@ -92,8 +93,39 @@ def _sep() -> str:
     return ';' if sys.platform == 'win32' else ':'
 
 
+def _glibc_version_tuple() -> tuple[int, int] | None:
+    libc_name, libc_version = platform.libc_ver()
+    if libc_name != 'glibc' or not libc_version:
+        return None
+
+    try:
+        major, minor, *_ = libc_version.split('.')
+        return int(major), int(minor)
+    except ValueError:
+        return None
+
+
+def warn_linux_glibc():
+    if sys.platform != 'linux':
+        return
+
+    version = _glibc_version_tuple()
+    if version is None:
+        return
+
+    if version >= (2, 35):
+        print(
+            "\nWarning: building on Linux with glibc "
+            f"{version[0]}.{version[1]}.\n"
+            "  PyInstaller binaries inherit the build host's glibc baseline.\n"
+            "  For wider Linux compatibility, build release binaries in the\n"
+            "  manylinux2014 container used by .github/workflows/release-binaries.yml.\n"
+        )
+
+
 def build(target: str, name: str, windowed: bool = False):
     clean()
+    warn_linux_glibc()
 
     sep = _sep()
     cmd = [

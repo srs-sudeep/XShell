@@ -121,6 +121,22 @@ python build.py
 ./dist/xshell
 ```
 
+Linux PyInstaller binaries inherit the glibc baseline from the machine that
+builds them. If you build on a newer distro, such as Ubuntu 24.04, the binary
+may fail on older distros with an error like:
+
+```text
+version `GLIBC_2.38' not found
+```
+
+For release binaries or anything you plan to share across Linux distros, build
+inside the same manylinux2014 container used by the GitHub Actions workflow:
+
+```bash
+docker run --rm -v "$PWD:/io" -w /io quay.io/pypa/manylinux2014_x86_64 \
+  /bin/bash -lc '/opt/python/cp311-cp311/bin/python -m pip install -r requirements.txt && /opt/python/cp311-cp311/bin/python build.py'
+```
+
 To install system-wide:
 
 ```bash
@@ -160,6 +176,22 @@ _HIDDEN = [
   'missing.module.name',
 ]
 ```
+
+### `GLIBC_2.38' not found` on Linux
+
+This means the executable was built on a newer Linux system than the target
+machine. PyInstaller bundles Python, but it still relies on the target system's
+glibc being compatible with the glibc used at build time.
+
+Check the target machine's glibc version:
+
+```bash
+ldd --version
+```
+
+Fix it by rebuilding on an older compatible baseline, preferably the
+`quay.io/pypa/manylinux2014_x86_64` container used by the release workflow, or
+by building directly on the oldest distro version you intend to support.
 
 ### Icon file
 
