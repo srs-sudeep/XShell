@@ -4,13 +4,13 @@ Uses prompt_toolkit for cross-platform readline, syntax highlighting, tab comple
 history search (Ctrl+R), and key bindings.
 """
 
+import getpass
 import os
+import socket
 import sys
 import time
-import socket
-import getpass
 from pathlib import Path
-from typing import Optional, Dict
+from typing import Dict, Optional
 
 from prompt_toolkit import PromptSession
 from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
@@ -19,8 +19,8 @@ from prompt_toolkit.formatted_text import ANSI
 from prompt_toolkit.history import FileHistory
 from prompt_toolkit.key_binding import KeyBindings
 from prompt_toolkit.lexers import PygmentsLexer
-from prompt_toolkit.styles import Style
 from prompt_toolkit.shortcuts import clear
+from prompt_toolkit.styles import Style
 
 try:
     from pygments.lexers.shell import BashLexer
@@ -28,15 +28,14 @@ try:
 except ImportError:
     _HAS_PYGMENTS = False
 
-from .parser import CommandParser, TokenType
-from .history import HistoryManager
-from .executor import CommandExecutor
+from ..config.manager import ConfigManager
+from ..plugins.manager import PluginManager
+from ..themes.manager import ThemeManager
 from .autocorrect import AutoCorrect
 from .builtins import list_builtins
-from ..config.manager import ConfigManager
-from ..themes.manager import ThemeManager
-from ..plugins.manager import PluginManager
-
+from .executor import CommandExecutor
+from .history import HistoryManager
+from .parser import CommandParser
 
 # ---------------------------------------------------------------------------
 # Tab completer
@@ -373,7 +372,7 @@ class XShell:
                         line = raw_line.strip()
                         if line and not line.startswith('#'):
                             self.execute_line(line)
-                print(f"\033[2m[sourced .xshellrc]\033[0m")
+                print("\033[2m[sourced .xshellrc]\033[0m")
             except Exception as e:
                 print(f"[.xshellrc] warning: {e}", file=sys.stderr)
 
