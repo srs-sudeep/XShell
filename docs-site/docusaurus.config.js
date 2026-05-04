@@ -29,7 +29,7 @@ const config = {
   title: "XShell",
   tagline: "A feature-rich cross-platform shell built in Python",
   favicon: "img/favicon.ico",
-  url: "https://xshell.dev",
+  url: "https://x-shell.vercel.app",
   baseUrl: "/",
   onBrokenLinks: "throw",
   markdown: {
@@ -99,8 +99,13 @@ const config = {
             position: "right",
           },
           {
-            href: "https://github.com/your-org/xshell",
+            href: "https://github.com/srs-sudeep/XShell",
             label: "GitHub",
+            position: "right",
+          },
+          {
+            href: "https://x-shell.vercel.app/",
+            label: "Live Docs",
             position: "right",
           },
         ],
@@ -134,7 +139,8 @@ const config = {
                 label: "Download Releases",
                 href: "https://github.com/srs-sudeep/XShell/releases",
               },
-              { label: "GitHub", href: "https://github.com/your-org/xshell" },
+              { label: "GitHub", href: "https://github.com/srs-sudeep/XShell" },
+              { label: "Live Docs", href: "https://x-shell.vercel.app/" },
               { label: "Changelog", to: "/docs/changelog" },
             ],
           },

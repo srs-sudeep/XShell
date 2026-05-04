@@ -5,17 +5,17 @@ Checks PyPI for newer versions and optionally upgrades via pip.
 
 from __future__ import annotations
 
-import sys
-import subprocess
-import urllib.request
-import urllib.error
 import json
+import subprocess
+import sys
+import urllib.error
+import urllib.request
 from typing import Optional, Tuple
 
 from xshell import __version__
 
 _PYPI_URL = "https://pypi.org/pypi/xshell/json"
-_GIT_REMOTE = "https://github.com/yourusername/xshell"
+_GIT_REMOTE = "https://github.com/srs-sudeep/XShell"
 
 
 def _parse_version(v: str) -> Tuple[int, ...]:

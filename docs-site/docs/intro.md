@@ -18,7 +18,7 @@ core engine, both modes.
  / /\ \\___ \ | '_ \ / _ \ | |
 / ____ \___) || | | |  __/ | |
 /_/    \_\____/ |_| |_|\___|_|_|
-  v2.0
+  v1.0
 ```
 
 ## Why XShell?
@@ -46,8 +46,8 @@ core engine, both modes.
 
 ```bash
 # Clone and enter
-git clone https://github.com/your-org/xshell.git
-cd xshell
+git clone https://github.com/srs-sudeep/XShell.git
+cd XShell
 
 # Install (with bun for docs; pip for the shell itself)
 pip install -r requirements.txt
@@ -58,5 +58,9 @@ python main.py
 # Or open in browser
 python main.py --web
 ```
+
+- Download releases: [github.com/srs-sudeep/XShell/releases](https://github.com/srs-sudeep/XShell/releases/)
+- Repository: [github.com/srs-sudeep/XShell](https://github.com/srs-sudeep/XShell)
+- Live docs: [x-shell.vercel.app](https://x-shell.vercel.app/)
 
 See [Getting Started](./getting-started) for a full walkthrough.

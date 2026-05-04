@@ -6,9 +6,10 @@ sidebar_position: 9
 
 # Changelog
 
-## v2.0.0 — 2025-04-25
+## v1.0 — 2026-05-04
 
 ### New
+
 - Complete rewrite as `xshell/` Python package with clean module separation
 - `prompt_toolkit` integration — cross-platform readline, tab completion, Ctrl+R search
 - Full pipeline support: `|` `>` `>>` `<` `&&` `||` `;` `&`
@@ -23,6 +24,7 @@ sidebar_position: 9
 - `docs-site/` — Docusaurus documentation site (managed with bun)
 
 ### Removed
+
 - `app.py` (replaced by `web_app.py`)
 - `native_shell.py` (Tkinter shell — replaced by `prompt_toolkit` engine)
 - `build_native.py`, `native_shell.spec`, `web_terminal.spec` (replaced by `build.py`)

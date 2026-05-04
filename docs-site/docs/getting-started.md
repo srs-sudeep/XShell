@@ -20,7 +20,7 @@ You'll see the banner and a prompt:
   __  __ _____  _          _ _
  ...
 
-  XShell v2.0  |  type 'help' for commands  |  Ctrl+D to exit
+  XShell v1.0  |  type 'help' for commands  |  Ctrl+D to exit
 
 sudeep@hostname:~/projects/xshell $
 ```
@@ -161,3 +161,6 @@ python main.py --theme gruvbox --web --port 8080
 - [Commands reference](./commands) — every built-in command
 - [Themes](./themes) — switch and create themes
 - [Writing a plugin](./plugins/writing-plugins) — extend XShell in minutes
+- Releases: [github.com/srs-sudeep/XShell/releases](https://github.com/srs-sudeep/XShell/releases/)
+- Repository: [github.com/srs-sudeep/XShell](https://github.com/srs-sudeep/XShell)
+- Live docs: [x-shell.vercel.app](https://x-shell.vercel.app/)

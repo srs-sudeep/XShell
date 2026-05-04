@@ -5,14 +5,13 @@ Fetches a JSON index from a remote URL and allows search + install.
 
 from __future__ import annotations
 
+import json
 import os
 import sys
-import json
-import shutil
-import urllib.request
 import urllib.error
+import urllib.request
 from pathlib import Path
-from typing import Dict, List, Optional, Any
+from typing import Any, Dict, List, Optional
 
 _REGISTRY_URL = (
     "https://raw.githubusercontent.com/yourusername/xshell-plugins/main/registry.json"
@@ -44,7 +43,7 @@ def fetch_registry(timeout: int = 8) -> List[Dict[str, Any]]:
     cache = _cache_path()
     try:
         req = urllib.request.Request(
-            _REGISTRY_URL, headers={"User-Agent": "xshell/2.0"}
+            _REGISTRY_URL, headers={"User-Agent": "xshell/1.0"}
         )
         with urllib.request.urlopen(req, timeout=timeout) as resp:
             data = json.loads(resp.read().decode())
@@ -83,7 +82,7 @@ def install_plugin(name: str, plugins: List[Dict[str, Any]]) -> tuple[bool, str]
 
     dest = _user_plugin_dir() / f"{name}.py"
     try:
-        req = urllib.request.Request(url, headers={"User-Agent": "xshell/2.0"})
+        req = urllib.request.Request(url, headers={"User-Agent": "xshell/1.0"})
         with urllib.request.urlopen(req, timeout=30) as resp:
             dest.write_bytes(resp.read())
         return True, f"Plugin '{name}' installed to {dest}"

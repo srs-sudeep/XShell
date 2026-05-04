@@ -1,4 +1,4 @@
-# XShell v2.0
+# XShell v1.0
 
 A feature-rich, cross-platform shell built entirely in Python.
 
@@ -11,7 +11,11 @@ A feature-rich, cross-platform shell built entirely in Python.
 /_/    \_\____/ |_| |_|\___|_|_|
 ```
 
-> Full documentation → **[docs-site/](./docs-site/)** — run with `bun start`
+> Live documentation: [x-shell.vercel.app](https://x-shell.vercel.app/)
+>
+> GitHub repository: [github.com/srs-sudeep/XShell](https://github.com/srs-sudeep/XShell)
+>
+> Download releases: [github.com/srs-sudeep/XShell/releases](https://github.com/srs-sudeep/XShell/releases/)
 
 ---
 
@@ -20,6 +24,10 @@ A feature-rich, cross-platform shell built entirely in Python.
 ### Shell
 
 ```bash
+# Clone repository
+git clone https://github.com/srs-sudeep/XShell.git
+cd XShell
+
 # 1. Create and activate a virtual environment (recommended)
 python -m venv .venv
 source .venv/bin/activate      # Windows: .venv\Scripts\activate
@@ -54,6 +62,8 @@ bun start       # dev server at http://localhost:3000
 bun run build   # build static site → docs-site/build/
 bun run serve   # preview the built site
 ```
+
+Live docs: [x-shell.vercel.app](https://x-shell.vercel.app/)
 
 ---
 
@@ -220,6 +230,9 @@ Binary builds are automated by `.github/workflows/release-binaries.yml` and run 
 - Manual run from Actions (`workflow_dispatch`)
 
 Regular pushes to `main` do not trigger this release workflow.
+
+Release downloads are available at:
+[github.com/srs-sudeep/XShell/releases](https://github.com/srs-sudeep/XShell/releases/)
 
 Typical flow:
 

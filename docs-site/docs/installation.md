@@ -18,8 +18,8 @@ sidebar_position: 3
 ## Step 1 — Get the source
 
 ```bash
-git clone https://github.com/your-org/xshell.git
-cd xshell
+git clone https://github.com/srs-sudeep/XShell.git
+cd XShell
 ```
 
 ## Step 2 — Create a virtual environment (recommended)
@@ -101,7 +101,11 @@ bun run build
 bun run serve
 ```
 
-The dev server runs at **http://localhost:3000** by default.
+The dev server runs at **[http://localhost:3000](http://localhost:3000)** by default.
+
+- Download releases: [github.com/srs-sudeep/XShell/releases](https://github.com/srs-sudeep/XShell/releases/)
+- Repository: [github.com/srs-sudeep/XShell](https://github.com/srs-sudeep/XShell)
+- Live docs: [x-shell.vercel.app](https://x-shell.vercel.app/)
 
 ---
 
