@@ -198,7 +198,7 @@ class XShell:
     # ------------------------------------------------------------------
 
     def run(self) -> int:
-        self._print_banner()
+        self._print_startup_view()
 
         history_file = self.history.path
         vi_mode = self.config.get('vi_mode', False)
@@ -391,6 +391,15 @@ class XShell:
     # ------------------------------------------------------------------
     # Presentation
     # ------------------------------------------------------------------
+
+    def _print_startup_view(self) -> None:
+        if self.config.get('show_banner', True):
+            self._print_banner()
+        if self.config.get('show_neofetch', True):
+            try:
+                self.execute_line('neofetch')
+            except Exception:
+                pass
 
     def _print_banner(self) -> None:
         from xshell import __version__
