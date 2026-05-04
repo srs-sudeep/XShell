@@ -14,7 +14,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 _REGISTRY_URL = (
-    "https://raw.githubusercontent.com/yourusername/xshell-plugins/main/registry.json"
+    "https://raw.githubusercontent.com/srs-sudeep/XShell/main/plugins/registry.json"
 )
 
 _LOCAL_CACHE: Optional[Path] = None

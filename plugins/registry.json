@@ -1,0 +1,68 @@
+{
+  "plugins": [
+    {
+      "name": "todo",
+      "version": "1.0.0",
+      "description": "Simple task list plugin for adding, listing, and checking todos.",
+      "author": "XShell Contributors",
+      "tags": ["productivity", "tasks"],
+      "url": "https://raw.githubusercontent.com/srs-sudeep/XShell/main/plugins/todo.py"
+    },
+    {
+      "name": "notes",
+      "version": "1.0.0",
+      "description": "Quick local notes plugin with create, write, and read commands.",
+      "author": "XShell Contributors",
+      "tags": ["productivity", "notes"],
+      "url": "https://raw.githubusercontent.com/srs-sudeep/XShell/main/plugins/notes.py"
+    },
+    {
+      "name": "weather",
+      "version": "1.0.0",
+      "description": "Weather lookup plugin for current conditions by city.",
+      "author": "XShell Contributors",
+      "tags": ["network", "utility"],
+      "url": "https://raw.githubusercontent.com/srs-sudeep/XShell/main/plugins/weather.py"
+    },
+    {
+      "name": "http",
+      "version": "1.0.0",
+      "description": "HTTP utility plugin for quick requests and API checks.",
+      "author": "XShell Contributors",
+      "tags": ["network", "http", "api"],
+      "url": "https://raw.githubusercontent.com/srs-sudeep/XShell/main/plugins/http.py"
+    },
+    {
+      "name": "docker",
+      "version": "1.0.0",
+      "description": "Docker helper commands for common container workflows.",
+      "author": "XShell Contributors",
+      "tags": ["devops", "containers"],
+      "url": "https://raw.githubusercontent.com/srs-sudeep/XShell/main/plugins/docker.py"
+    },
+    {
+      "name": "git",
+      "version": "1.0.0",
+      "description": "Built-in git shortcuts with pass-through argument support.",
+      "author": "XShell Contributors",
+      "tags": ["scm", "git"],
+      "url": "https://raw.githubusercontent.com/srs-sudeep/XShell/main/xshell/plugins/builtin/git_plugin.py"
+    },
+    {
+      "name": "sysinfo",
+      "version": "1.0.0",
+      "description": "System metrics plugin for CPU, RAM, disk, and network stats.",
+      "author": "XShell Contributors",
+      "tags": ["system", "monitoring"],
+      "url": "https://raw.githubusercontent.com/srs-sudeep/XShell/main/xshell/plugins/builtin/sysinfo_plugin.py"
+    },
+    {
+      "name": "calc",
+      "version": "1.0.0",
+      "description": "Safe calculator plugin with expression parsing and unit conversion.",
+      "author": "XShell Contributors",
+      "tags": ["math", "conversion"],
+      "url": "https://raw.githubusercontent.com/srs-sudeep/XShell/main/xshell/plugins/builtin/calc_plugin.py"
+    }
+  ]
+}
