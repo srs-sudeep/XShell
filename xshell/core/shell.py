@@ -332,13 +332,21 @@ class XShell:
     def _build_style(self) -> Style:
         theme = self.theme_manager.current_theme
         colors = theme.get('colors', {})
-        bg = colors.get('background', '#1e1e1e')
-        fg = colors.get('foreground', '#f0f0f0')
+        bg        = colors.get('background', '#1e1e1e')
+        fg        = colors.get('foreground', '#f0f0f0')
+        selection = colors.get('selection', '#3e4451')
+        cursor    = colors.get('cursor',    '#528bff')
         return Style.from_dict({
-            '': f'bg:{bg} {fg}',
-            'completion-menu.completion': f'bg:{bg} {fg}',
-            'completion-menu.completion.current': 'bg:#444 bold',
-            'auto-suggestion': '#555555 italic',
+            '':                                        f'bg:{bg} {fg}',
+            'completion-menu':                         f'bg:{selection} {fg}',
+            'completion-menu.completion':              f'bg:{selection} {fg}',
+            'completion-menu.completion.current':      f'bg:{cursor} fg:{bg} bold',
+            'completion-menu.meta.completion':         f'bg:{selection} {fg}',
+            'completion-menu.meta.completion.current': f'bg:{cursor} fg:{bg}',
+            'scrollbar.background':                    f'bg:{bg}',
+            'scrollbar.button':                        f'bg:{selection}',
+            'auto-suggestion':                         f'dim {fg} italic',
+            'bottom-toolbar':                          f'bg:{selection} {fg}',
         })
 
     # ------------------------------------------------------------------
@@ -392,13 +400,27 @@ class XShell:
     # ------------------------------------------------------------------
 
     def _print_startup_view(self) -> None:
-        if self.config.get('show_banner', True):
-            self._print_banner()
-        if self.config.get('show_neofetch', True):
-            try:
-                self.execute_line('neofetch')
-            except Exception:
-                pass
+        self._apply_terminal_colors()
+        try:
+            self.execute_line('neofetch')
+        except Exception:
+            pass
+
+    def _apply_terminal_colors(self) -> None:
+        """Emit OSC escape sequences so the terminal emulator adopts the theme bg/fg/cursor."""
+        if not sys.stdout.isatty():
+            return
+        colors = self.theme_manager.current_theme.get('colors', {})
+        bg     = colors.get('background', '')
+        fg     = colors.get('foreground', '')
+        cursor = colors.get('cursor', '')
+        if bg:
+            sys.stdout.write(f'\033]11;{bg}\007')
+        if fg:
+            sys.stdout.write(f'\033]10;{fg}\007')
+        if cursor:
+            sys.stdout.write(f'\033]12;{cursor}\007')
+        sys.stdout.flush()
 
     def _print_banner(self) -> None:
         from xshell import __version__

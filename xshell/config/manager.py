@@ -20,8 +20,6 @@ _DEFAULTS = {
     "prompt_format": "{default}",
     "rprompt": True,
     "vi_mode": False,
-    "show_banner": True,
-    "show_neofetch": True,
     "aliases": {
         "ll": "ls -l",
         "la": "ls -a",

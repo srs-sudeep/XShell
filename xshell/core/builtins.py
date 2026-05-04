@@ -57,6 +57,39 @@ MAG   = '\033[35m'
 GRN   = '\033[32m'
 RESET = '\033[0m'
 
+_NAMED_FG: dict = {
+    'black':          '\033[30m', 'bright_black':   '\033[90m',
+    'red':            '\033[31m', 'bright_red':     '\033[91m',
+    'green':          '\033[32m', 'bright_green':   '\033[92m',
+    'yellow':         '\033[33m', 'bright_yellow':  '\033[93m',
+    'blue':           '\033[34m', 'bright_blue':    '\033[94m',
+    'magenta':        '\033[35m', 'bright_magenta': '\033[95m',
+    'cyan':           '\033[36m', 'bright_cyan':    '\033[96m',
+    'white':          '\033[37m', 'bright_white':   '\033[97m',
+}
+
+
+def _hex_fg(color: str) -> str:
+    """Return an ANSI fg escape for a named or #rrggbb color."""
+    if color.startswith('#') and len(color) == 7:
+        try:
+            r, g, b = int(color[1:3], 16), int(color[3:5], 16), int(color[5:7], 16)
+            return f'\033[38;2;{r};{g};{b}m'
+        except ValueError:
+            pass
+    return _NAMED_FG.get(color.lower(), CYAN)
+
+
+def _hex_bg(color: str) -> str:
+    """Return an ANSI bg escape for a #rrggbb color."""
+    if color.startswith('#') and len(color) == 7:
+        try:
+            r, g, b = int(color[1:3], 16), int(color[3:5], 16), int(color[5:7], 16)
+            return f'\033[48;2;{r};{g};{b}m'
+        except ValueError:
+            pass
+    return ''
+
 
 def _wants_help(args: List[str]) -> bool:
     return '--help' in args or '-h' in args
@@ -284,16 +317,31 @@ def cmd_neofetch(shell: 'XShell', args: List[str]) -> int:
         except Exception:
             pass
 
+    theme_colors = shell.theme_manager.current_theme.get('colors', {})
+    accent = _hex_fg(theme_colors.get('prompt_host', 'bright_cyan'))
+    label  = _hex_fg(theme_colors.get('prompt_cwd',  'bright_yellow'))
+
+    # Color palette swatch — one █ block per themed key
+    swatch_keys = ['prompt_user', 'prompt_host', 'prompt_cwd', 'prompt_git',
+                   'error', 'success', 'warning', 'info']
+    swatch = ''
+    for key in swatch_keys:
+        c = theme_colors.get(key, '')
+        swatch += f'{_hex_fg(c)}███{RESET}' if c else ''
+
     info = [
-        f"{BOLD}{user}@{host}{RESET}",
-        f"{CYAN}OS{RESET}:       {uname.system} {uname.release} ({uname.machine})",
-        f"{CYAN}Kernel{RESET}:   {uname.version.split(':')[0]}",
-        f"{CYAN}Shell{RESET}:    XShell {__version__}",
-        f"{CYAN}Python{RESET}:   {platform.python_version()}",
-        f"{CYAN}Uptime{RESET}:   {uptime}",
-        f"{CYAN}Memory{RESET}:   {mem_line}",
-        f"{CYAN}Theme{RESET}:    {shell.theme_manager.current_name}",
-        f"{CYAN}PWD{RESET}:      {os.getcwd()}",
+        f"{BOLD}{accent}{user}@{host}{RESET}",
+        f"{label}OS{RESET}:       {uname.system} {uname.release} ({uname.machine})",
+        f"{label}Kernel{RESET}:   {uname.version.split(':')[0]}",
+        f"{label}Shell{RESET}:    XShell {__version__}",
+        f"{label}Python{RESET}:   {platform.python_version()}",
+        f"{label}Uptime{RESET}:   {uptime}",
+        f"{label}Memory{RESET}:   {mem_line}",
+        f"{label}Theme{RESET}:    {shell.theme_manager.current_name}",
+        f"{label}Colors{RESET}:   {theme_colors.get('background', '')}  {theme_colors.get('foreground', '')}",
+        f"{label}PWD{RESET}:      {os.getcwd()}",
+        '',
+        swatch,
     ]
 
     logo = shell.BANNER.strip('\n').splitlines()
@@ -304,7 +352,7 @@ def cmd_neofetch(shell: 'XShell', args: List[str]) -> int:
     for i in range(rows):
         left = logo[i] if i < len(logo) else ''
         right = info[i] if i < len(info) else ''
-        print(f"{CYAN}{left:<{logo_w}}{RESET}  {right}")
+        print(f"{accent}{left:<{logo_w}}{RESET}  {right}")
     print()
     return 0
 
@@ -712,6 +760,7 @@ def cmd_theme(shell: 'XShell', args: List[str]) -> int:
         _print_ok(f"Theme set to '{name}'")
         shell.config.set('theme', name)
         shell.config.save()
+        shell._apply_terminal_colors()
         return 0
     _print_err(f"theme: '{name}' not found. Run 'theme list' to see available themes.")
     return 1
