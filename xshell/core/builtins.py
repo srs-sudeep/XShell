@@ -5,6 +5,7 @@ All builtins receive (shell, args) and return an exit code (int).
 
 import glob
 import os
+import platform
 import shutil
 import sys
 from pathlib import Path
@@ -229,6 +230,89 @@ def cmd_clear(shell: 'XShell', args: List[str]) -> int:
 @builtin('cls')
 def cmd_cls(shell: 'XShell', args: List[str]) -> int:
     return cmd_clear(shell, args)
+
+
+@builtin('banner')
+def cmd_banner(shell: 'XShell', args: List[str]) -> int:
+    """Show the XShell banner."""
+    if _wants_help(args):
+        return _help('banner', 'Print the XShell startup banner.')
+    shell._print_banner()
+    return 0
+
+
+def _format_uptime(seconds: int) -> str:
+    days, rem = divmod(seconds, 86400)
+    hours, rem = divmod(rem, 3600)
+    minutes, sec = divmod(rem, 60)
+    if days:
+        return f"{days}d {hours}h {minutes}m {sec}s"
+    if hours:
+        return f"{hours}h {minutes}m {sec}s"
+    return f"{minutes}m {sec}s"
+
+
+@builtin('neofetch')
+def cmd_neofetch(shell: 'XShell', args: List[str]) -> int:
+    """Show a neofetch-style XShell system summary."""
+    if _wants_help(args):
+        return _help('neofetch',
+            'Show a neofetch-style summary with the XShell logo and system details.',
+            examples=['neofetch'])
+
+    try:
+        import psutil  # type: ignore
+    except ImportError:
+        psutil = None
+
+    from xshell import __version__
+
+    uname = platform.uname()
+    user = os.environ.get('USER') or os.environ.get('USERNAME') or 'unknown'
+    host = uname.node.split('.')[0] if uname.node else 'localhost'
+
+    uptime = 'n/a'
+    mem_line = 'n/a'
+    if psutil is not None:
+        try:
+            import time
+            uptime = _format_uptime(int(time.time() - psutil.boot_time()))
+            vm = psutil.virtual_memory()
+            used_gb = vm.used / (1024 ** 3)
+            total_gb = vm.total / (1024 ** 3)
+            mem_line = f"{used_gb:.1f} GiB / {total_gb:.1f} GiB ({vm.percent:.0f}%)"
+        except Exception:
+            pass
+
+    info = [
+        f"{BOLD}{user}@{host}{RESET}",
+        f"{CYAN}OS{RESET}:       {uname.system} {uname.release} ({uname.machine})",
+        f"{CYAN}Kernel{RESET}:   {uname.version.split(':')[0]}",
+        f"{CYAN}Shell{RESET}:    XShell {__version__}",
+        f"{CYAN}Python{RESET}:   {platform.python_version()}",
+        f"{CYAN}Uptime{RESET}:   {uptime}",
+        f"{CYAN}Memory{RESET}:   {mem_line}",
+        f"{CYAN}Theme{RESET}:    {shell.theme_manager.current_name}",
+        f"{CYAN}PWD{RESET}:      {os.getcwd()}",
+    ]
+
+    logo = shell.BANNER.strip('\n').splitlines()
+    logo_w = max((len(line) for line in logo), default=0)
+    rows = max(len(logo), len(info))
+
+    print()
+    for i in range(rows):
+        left = logo[i] if i < len(logo) else ''
+        right = info[i] if i < len(info) else ''
+        print(f"{CYAN}{left:<{logo_w}}{RESET}  {right}")
+    print()
+    return 0
+
+
+@builtin('fetch')
+def cmd_fetch(shell: 'XShell', args: List[str]) -> int:
+    """Alias for neofetch."""
+    return cmd_neofetch(shell, ['neofetch'] + args[1:])
 
 
 # ---------------------------------------------------------------------------
