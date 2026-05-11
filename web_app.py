@@ -30,11 +30,23 @@ app = Flask(
     static_folder=_res('static'),
 )
 app.config['SECRET_KEY'] = 'xshell-secret-2025'
-socketio = SocketIO(app, cors_allowed_origins='*', async_mode='threading')
+# Werkzeug's dev server cannot complete Engine.IO WebSocket upgrades reliably
+# (AssertionError: write() before start_response). Stay on long-polling unless you
+# run behind a server that supports WebSockets (e.g. eventlet with monkey_patch).
+socketio = SocketIO(
+    app,
+    cors_allowed_origins='*',
+    async_mode='threading',
+    allow_upgrades=False,
+    max_http_buffer_size=50 * 1024 * 1024,
+)
 
 # Per-session shell state (keyed by socket session id)
 _sessions: dict = {}
 _lock = threading.Lock()
+# Serialise global stdout/stderr redirection — concurrent tabs would otherwise
+# restore each other's streams and corrupt the HTTP/Socket.IO response.
+_stdout_lock = threading.Lock()
 
 
 def _get_or_create_shell(sid: str):
@@ -210,26 +222,25 @@ def handle_command(payload):
     shell.history.add(command)
 
     import io
-    old_stdout, old_stderr = sys.stdout, sys.stderr
-    cap_out = io.StringIO()
-    cap_err = io.StringIO()
-    sys.stdout = cap_out
-    sys.stderr = cap_err
-
-    exit_code = 0
-    try:
-        exit_code = shell.execute_line(command)
-    except SystemExit as e:
-        exit_code = e.code or 0
-        shell.running = False
-    except Exception:
-        cap_err.write(traceback.format_exc())
-    finally:
-        sys.stdout = old_stdout
-        sys.stderr = old_stderr
-
-    out = cap_out.getvalue()
-    err = cap_err.getvalue()
+    with _stdout_lock:
+        old_stdout, old_stderr = sys.stdout, sys.stderr
+        cap_out = io.StringIO()
+        cap_err = io.StringIO()
+        sys.stdout = cap_out
+        sys.stderr = cap_err
+        exit_code = 0
+        try:
+            exit_code = shell.execute_line(command)
+        except SystemExit as e:
+            exit_code = e.code or 0
+            shell.running = False
+        except Exception:
+            cap_err.write(traceback.format_exc())
+        finally:
+            sys.stdout = old_stdout
+            sys.stderr = old_stderr
+        out = cap_out.getvalue()
+        err = cap_err.getvalue()
 
     if out:
         emit('output', {'data': out, 'type': 'stdout'})
@@ -258,7 +269,9 @@ def handle_complete(payload):
 @socketio.on('file_upload')
 def handle_file_upload(payload):
     """Receive a base64-encoded file from the browser."""
-    sid = _get_sid()
+    if not isinstance(payload, dict):
+        emit('output', {'data': 'Upload failed: invalid payload\n', 'type': 'stderr'})
+        return
     filename = payload.get('filename', 'upload')
     content_b64 = payload.get('content', '')
     try:
@@ -272,8 +285,10 @@ def handle_file_upload(payload):
             'data': f"File '{safe_name}' uploaded ({len(content)} bytes) → {dest}\n",
             'type': 'info',
         })
+        emit('output', {'data': '', 'type': 'prompt', 'cwd': os.getcwd(), 'code': 0})
     except Exception as e:
         emit('output', {'data': f"Upload failed: {e}\n", 'type': 'stderr'})
+        emit('output', {'data': '', 'type': 'prompt', 'cwd': os.getcwd(), 'code': 1})
 
 
 @socketio.on('file_download_request')
@@ -316,6 +331,8 @@ def handle_get_themes():
 def handle_set_theme(payload):
     sid = _get_sid()
     shell = _get_or_create_shell(sid)
+    if not isinstance(payload, dict):
+        payload = {}
     name = payload.get('theme', 'default')
     if shell.theme_manager.set_theme(name):
         colors = shell.theme_manager.current_theme.get('colors', {})
@@ -353,7 +370,14 @@ def run_web(port: int = 5000, open_browser: bool = True) -> None:
             print(f"Starting XShell web server on http://127.0.0.1:{p}")
             if open_browser:
                 threading.Timer(1.0, lambda: webbrowser.open(f'http://127.0.0.1:{p}')).start()
-            socketio.run(app, host='127.0.0.1', port=p, debug=False, use_reloader=False)
+            socketio.run(
+                app,
+                host='127.0.0.1',
+                port=p,
+                debug=False,
+                use_reloader=False,
+                allow_unsafe_werkzeug=True,
+            )
             break
         except OSError:
             print(f"Port {p} in use, trying next…")

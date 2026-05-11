@@ -95,7 +95,9 @@ function $prompt(id) { return document.getElementById(`prompt-${id}`); }
 
 // ── Socket management ─────────────────────────────────────────────────────
 function createSocket(paneId) {
-  const socket = io({ transports: ['websocket', 'polling'] });
+  // Polling first: Werkzeug (socketio.run dev server + threading) breaks on
+  // transport=websocket (write() before start_response). Server sets allow_upgrades=False.
+  const socket = io({ transports: ['polling', 'websocket'] });
   panes[paneId].socket = socket;
 
   socket.on('connect', () => {
@@ -262,9 +264,13 @@ function submitCommand(paneId) {
   pane.historyIndex = pane.history.length;
   pane.currentInput = '';
 
-  if (pane.socket) {
-    pane.socket.emit('command', { data: cmd });
+  if (!pane.socket?.connected) {
+    appendLine(paneId, 'Not connected — wait for the session or reload the page.\n', 'line-stderr');
+    inp.value = '';
+    updateGhost(paneId);
+    return;
   }
+  pane.socket.emit('command', { data: cmd });
   inp.value = '';
   updateGhost(paneId);
 }
@@ -740,20 +746,38 @@ function triggerUpload() {
   document.getElementById('file-upload-input').click();
 }
 
+function uint8ToBase64(bytes) {
+  const chunk = 0x8000;
+  let binary = '';
+  for (let i = 0; i < bytes.length; i += chunk) {
+    binary += String.fromCharCode.apply(null, bytes.subarray(i, i + chunk));
+  }
+  return btoa(binary);
+}
+
 function uploadFiles(files) {
   if (!files || !files.length) return;
+  const sock = panes[activePaneId]?.socket;
+  if (!sock || !sock.connected) {
+    appendLine(activePaneId, 'Not connected — wait for the session, then try again.\n', 'line-stderr');
+    return;
+  }
   Array.from(files).forEach(file => {
     const reader = new FileReader();
-    reader.onload = (e) => {
-      const content = btoa(e.target.result);
-      panes[activePaneId].socket?.emit('file_upload', {
+    reader.onload = () => {
+      const bytes = new Uint8Array(reader.result);
+      const content = uint8ToBase64(bytes);
+      sock.emit('file_upload', {
         filename: file.name,
         content: content,
         size: file.size,
       });
       appendLine(activePaneId, `Uploading '${escHtml(file.name)}' (${(file.size/1024).toFixed(1)} KB)...\n`, 'line-info');
     };
-    reader.readAsBinaryString(file);
+    reader.onerror = () => {
+      appendLine(activePaneId, `Failed to read '${escHtml(file.name)}'.\n`, 'line-stderr');
+    };
+    reader.readAsArrayBuffer(file);
   });
 }
 
