@@ -58,9 +58,12 @@ def _get_or_create_shell(sid: str):
             from xshell.core.history import HistoryManager
             from xshell.core.parser import CommandParser
             from xshell.plugins.manager import PluginManager
+            from xshell.core.shell import XShell
             from xshell.themes.manager import ThemeManager
 
             class _WebShell:
+                BANNER = XShell.BANNER
+
                 def __init__(self):
                     self.config = ConfigManager()
                     self.theme_manager = ThemeManager(self.config)
@@ -77,6 +80,12 @@ def _get_or_create_shell(sid: str):
                     self.plugin_manager.load_configured_plugins()
                     self._background_jobs = {}
                     self._job_counter = 0
+
+                def _print_banner(self) -> None:
+                    XShell._print_banner(self)
+
+                def _apply_terminal_colors(self) -> None:
+                    XShell._apply_terminal_colors(self)
 
                 def execute_line(self, line: str) -> int:
                     import re
@@ -199,8 +208,23 @@ def download_file(filename):
 @socketio.on('connect')
 def handle_connect():
     sid = _get_sid()
-    _get_or_create_shell(sid)
-    emit('output', {'data': _welcome(), 'type': 'info', 'cwd': os.getcwd()})
+    shell = _get_or_create_shell(sid)
+    parts = []
+    if shell.config.get('show_banner', True):
+        import io
+        with _stdout_lock:
+            old_stdout, old_stderr = sys.stdout, sys.stderr
+            cap = io.StringIO()
+            sys.stdout = cap
+            sys.stderr = cap
+            try:
+                shell._print_banner()
+            finally:
+                sys.stdout = old_stdout
+                sys.stderr = old_stderr
+        parts.append(cap.getvalue())
+    parts.append(_welcome(after_banner=bool(parts)))
+    emit('output', {'data': ''.join(parts), 'type': 'info', 'cwd': os.getcwd()})
 
 
 @socketio.on('disconnect')
@@ -350,9 +374,15 @@ def _get_sid():
     return request.sid
 
 
-def _welcome():
+def _welcome(*, after_banner: bool = False):
+    """Opening text; when after_banner is True, the ASCII banner was already shown."""
     from xshell import __version__
     cwd = os.getcwd()
+    if after_banner:
+        return (
+            f"Working directory: {cwd}\n"
+            f"Drag files to upload. Right-click for options.\n\n"
+        )
     return (
         f"XShell v{__version__} — Web Terminal\n"
         f"Working directory: {cwd}\n"

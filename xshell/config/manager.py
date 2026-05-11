@@ -13,6 +13,7 @@ from typing import Any, Optional
 
 _DEFAULTS = {
     "theme": "default",
+    "show_banner": True,
     "plugins": ["git", "sysinfo", "calc"],
     "history_size": 2000,
     "autocorrect": True,
