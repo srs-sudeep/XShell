@@ -84,6 +84,12 @@ const config = {
             label: "Docs",
           },
           {
+            type: "doc",
+            docId: "demo-media",
+            label: "Demos",
+            position: "left",
+          },
+          {
             to: "/docs/commands",
             label: "Commands",
             position: "left",
@@ -118,6 +124,7 @@ const config = {
             title: "Docs",
             items: [
               { label: "Getting Started", to: "/docs/getting-started" },
+              { label: "Demos & Screenshots", to: "/docs/demo-media" },
               { label: "Commands", to: "/docs/commands" },
               { label: "Plugins", to: "/docs/plugins" },
               { label: "Themes", to: "/docs/themes" },

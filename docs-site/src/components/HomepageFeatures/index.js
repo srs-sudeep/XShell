@@ -36,7 +36,7 @@ const features = [
     icon: "🌐",
     title: "Web Terminal",
     description:
-      'Run "python main.py --web" to open a full-featured browser terminal with ANSI colours and a theme switcher.',
+      'Run "python main.py --web" to open a full-featured browser terminal with ANSI colours and a theme switcher. Video: youtu.be/LNP0p5zTUro',
   },
   {
     icon: "⛓️",

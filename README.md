@@ -17,6 +17,19 @@ A feature-rich, cross-platform shell built entirely in Python.
 >
 > Download releases: [github.com/srs-sudeep/XShell/releases](https://github.com/srs-sudeep/XShell/releases/)
 
+## Demos (video)
+
+| Mode | YouTube |
+| ---- | ------- |
+| **Native shell** (`python main.py`) | [youtu.be/XHgtwIJJVFs](https://youtu.be/XHgtwIJJVFs) |
+| **Web terminal** (`python main.py --web`) | [youtu.be/LNP0p5zTUro](https://youtu.be/LNP0p5zTUro) |
+
+**Screenshots:** fourteen captures live in [`static/img/demo/`](static/img/demo/). A labelled gallery (same images) is on the docs site: [x-shell.vercel.app/docs/demo-media](https://x-shell.vercel.app/docs/demo-media).
+
+![Web terminal: project listing (`dir`)](static/img/demo/web-dir-listing.png)
+
+![Web terminal: `help` builtins](static/img/demo/web-help-builtins.png)
+
 ---
 
 ## Quick start
@@ -116,7 +129,7 @@ XShell/
 │   ├── plugins/         ← Plugin base class, manager, bundled plugins
 │   └── ui/              ← Rich renderer, prompt builder
 │
-├── static/              ← Web UI (CSS + JS)
+├── static/              ← Web UI (CSS + JS); `img/demo/` — screenshots for README & docs
 ├── templates/           ← Web terminal HTML
 │
 ├── plugins/             ← Drop project-local plugins here (.py)

@@ -27,6 +27,12 @@ function HeroBanner() {
           </Link>
           <Link
             className="button button--secondary button--lg margin-left--md"
+            to="/docs/demo-media"
+          >
+            Demos
+          </Link>
+          <Link
+            className="button button--secondary button--lg margin-left--md"
             to="/docs/commands"
           >
             Commands

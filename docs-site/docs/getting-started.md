@@ -8,6 +8,8 @@ sidebar_position: 2
 
 This page walks you through your first XShell session from install to your first plugin.
 
+**Native shell demo (video):** [youtu.be/XHgtwIJJVFs](https://youtu.be/XHgtwIJJVFs) — stills and the web UI tour live on [Demos & Screenshots](./demo-media).
+
 ## 1. Launch the shell
 
 ```bash
@@ -158,6 +160,7 @@ python main.py --theme gruvbox --web --port 8080
 
 ## Next steps
 
+- [Demos & Screenshots](./demo-media) — video tours and screenshot gallery (native + web)
 - [Commands reference](./commands) — every built-in command
 - [Themes](./themes) — switch and create themes
 - [Writing a plugin](./plugins/writing-plugins) — extend XShell in minutes

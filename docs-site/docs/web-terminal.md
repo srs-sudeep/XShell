@@ -10,6 +10,8 @@ XShell includes a browser-based terminal that uses the same core engine as the
 native shell. It's powered by **Flask** and **Socket.IO** for real-time bidirectional
 communication.
 
+**Demo video (web UI):** [youtu.be/LNP0p5zTUro](https://youtu.be/LNP0p5zTUro) — see also [Demos & Screenshots](./demo-media) for the native walkthrough and a full screenshot gallery.
+
 ## Starting the web terminal
 
 ```bash

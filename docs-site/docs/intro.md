@@ -62,5 +62,6 @@ python main.py --web
 - Download releases: [github.com/srs-sudeep/XShell/releases](https://github.com/srs-sudeep/XShell/releases/)
 - Repository: [github.com/srs-sudeep/XShell](https://github.com/srs-sudeep/XShell)
 - Live docs: [x-shell.vercel.app](https://x-shell.vercel.app/)
+- **Demos:** [video tours & screenshot gallery](./demo-media) — native shell ([YouTube](https://youtu.be/XHgtwIJJVFs)), web terminal ([YouTube](https://youtu.be/LNP0p5zTUro))
 
 See [Getting Started](./getting-started) for a full walkthrough.
